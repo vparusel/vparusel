@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Endospezialist Bielefeld – KI-Assistent</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:20px;">
+
+<h2>Endospezialist Bielefeld – KI-Assistent</h2>
+
+<div id="chatbox" style="border: 1px solid #ccc; padding: 15px; min-height: 200px; margin-bottom: 15px;"></div>
+
+<input type="text" id="frage" placeholder="Stellen Sie Ihre Frage..." style="width: 80%; padding: 8px;">
+<button onclick="frageStellen()" style="padding: 8px;">Absenden</button>
+
+<script>
+const OPENAI_API_KEY = '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';
+
+async function frageStellen() {
+    const frage = document.getElementById('frage').value;
+    
+    const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        model: 'gpt-3.5-turbo',
+        messages: [
+            {role: 'system', content: 'Du bist der persönliche KI-Assistent von Dr. Valentin Parusel, Spezialist für Endodontie in Bielefeld. Beantworte Fragen freundlich, präzise und professionell. Weise darauf hin, dass komplexe medizinische Fragen in der Praxis persönlich besprochen werden sollten.'},
+            {role: 'user', content: frage}
+        ]
+    }, {
+        headers: {
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    const antwort = response.data.choices[0].message.content;
+
+    document.getElementById('chatbox').innerHTML += `<p><strong>Sie:</strong> ${frage}</p>`;
+    document.getElementById('chatbox').innerHTML += `<p><strong>KI-Assistent:</strong> ${antwort}</p>`;
+
+    document.getElementById('frage').value = '';
+}
+</script>
+
+</body>
+</html>
